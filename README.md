@@ -66,7 +66,7 @@ By implementing the engine from scratch (rather than wrapping an existing SIEM),
 ## Install
 
 ```bash
-git clone https://github.com/<you>/authdetect.git
+git clone https://github.com/ParshwaBhavsar/authdetect.git
 cd authdetect
 pip install -r requirements.txt
 pip install -e .          # optional: installs the `authdetect` command
