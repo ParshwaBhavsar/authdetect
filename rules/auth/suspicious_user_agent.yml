@@ -1,0 +1,34 @@
+title: Known Attack Tool User Agent
+id: AUTHDET-006
+status: stable
+description: |
+  HTTP request bearing the user-agent string of a known security scanner
+  or exploit framework targeting authentication endpoints.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: web
+detection:
+  scanners:
+    user_agent|contains:
+      - sqlmap
+      - nikto
+      - nuclei
+      - zgrab
+      - gobuster
+      - dirbuster
+      - hydra
+      - medusa
+      - Burp Suite
+      - wfuzz
+      - ffuf
+  condition: scanners
+level: medium
+mitre_attack:
+  tactics: [discovery, credential-access]
+  techniques: [T1595.002]
+references:
+  - url: https://attack.mitre.org/techniques/T1595/002/
+false_positives:
+  - Authorised penetration testing (correlate with change-management records)
+tags: [attack.discovery, attack.t1595.002]

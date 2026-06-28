@@ -1,0 +1,27 @@
+title: Distributed Authentication Failure Burst
+id: AUTHDET-012
+status: stable
+description: |
+  Large burst of 401s across many distinct source IPs in a short window.
+  Individual IPs stay under per-IP thresholds, but the aggregate reveals a
+  coordinated botnet or distributed proxy attack.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: authentication
+detection:
+  selection:
+    status_code: [401]
+    path|contains: login
+  condition: selection | count(src_ip) > 12
+  timeframe: 60s
+level: critical
+mitre_attack:
+  tactics: [credential-access]
+  techniques: [T1110]
+references:
+  - cwe: CWE-307
+  - url: https://attack.mitre.org/techniques/T1110/
+false_positives:
+  - Multiple offices behind different egress IPs launching an automated test
+tags: [attack.credential_access, attack.t1110]

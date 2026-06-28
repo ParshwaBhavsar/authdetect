@@ -1,0 +1,27 @@
+title: Session Fixation Attempt
+id: AUTHDET-005
+status: experimental
+description: |
+  A session identifier appears as a URL query parameter before authentication.
+  An attacker supplies a known session ID so that after the victim logs in,
+  the attacker can reuse the now-authenticated session.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: web
+detection:
+  selection:
+    path|re: ".*(sessionid|session_id|PHPSESSID|JSESSIONID)=[^&]{8,}.*"
+    status_code: [200]
+  condition: selection
+level: high
+mitre_attack:
+  tactics: [credential-access]
+  techniques: [T1563]
+references:
+  - cwe: CWE-384
+  - owasp: "A07:2021 – Identification and Authentication Failures"
+  - url: https://owasp.org/www-community/attacks/Session_fixation
+false_positives:
+  - Legacy applications that legitimately pass session IDs in URLs
+tags: [attack.credential_access, attack.t1563]

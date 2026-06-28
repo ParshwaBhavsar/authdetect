@@ -1,0 +1,40 @@
+title: JWT Unexpected or Weak Signing Algorithm
+id: AUTHDET-008
+status: stable
+description: |
+  A JWT bearing an algorithm not on the application allowlist arrived.
+  Common attack variants include downgrade to HS1/MD5-based algorithms,
+  or switching from asymmetric (RS256) to symmetric (HS256) to abuse the
+  public key as an HMAC secret.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: authentication
+detection:
+  suspicious_alg:
+    token_alg:
+      - HS1
+      - RS1
+      - none
+  filter_expected:
+    token_alg:
+      - HS256
+      - RS256
+      - ES256
+      - HS384
+      - RS384
+      - ES384
+      - HS512
+      - RS512
+      - ES512
+  condition: suspicious_alg and not filter_expected
+level: high
+mitre_attack:
+  tactics: [credential-access]
+  techniques: [T1550.001]
+references:
+  - cwe: CWE-327
+  - url: https://portswigger.net/web-security/jwt/algorithm-confusion
+false_positives:
+  - JWT libraries with non-standard capitalisation of algorithm names
+tags: [attack.credential_access, attack.t1550.001]

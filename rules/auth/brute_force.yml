@@ -1,0 +1,45 @@
+title: Brute Force Authentication Attempt
+id: AUTHDET-001
+status: stable
+description: |
+  Multiple failed authentication attempts from a single source IP within a
+  short time window. Distinguishes brute-force (same user, high velocity) from
+  credential stuffing by grouping on src_ip rather than on user.
+
+author: authdetect
+date: 2025-01-01
+
+logsource:
+  category: authentication
+  description: HTTP or syslog auth events with status codes
+
+detection:
+  selection:
+    status_code:
+      - 401
+      - 403
+    path|contains: login
+  condition: selection | count(src_ip) > 5
+  timeframe: 60s
+
+level: high
+
+mitre_attack:
+  tactics:
+    - credential-access
+  techniques:
+    - T1110.001   # Brute Force: Password Guessing
+
+references:
+  - cwe: CWE-307  # Improper Restriction of Excessive Authentication Attempts
+  - owasp: "A07:2021 – Identification and Authentication Failures"
+  - url: https://attack.mitre.org/techniques/T1110/001/
+
+false_positives:
+  - Automated integration test suites hitting a staging environment
+  - Legitimate users behind a shared corporate NAT / proxy
+  - Load balancers that forward a single external IP
+
+tags:
+  - attack.credential_access
+  - attack.t1110.001

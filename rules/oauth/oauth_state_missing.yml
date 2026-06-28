@@ -1,0 +1,29 @@
+title: OAuth Flow Without State Parameter
+id: AUTHDET-011
+status: experimental
+description: |
+  OAuth 2.0 authorisation request that omits the state parameter. The state
+  value is the primary CSRF defence in OAuth flows — its absence leaves the
+  flow vulnerable to login-CSRF and open-redirect chaining attacks.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: web
+detection:
+  oauth_endpoint:
+    path|re: ".*(oauth|authorize|callback).*"
+    method: GET
+  no_state:
+    path|re: "^(?!.*[?&]state=).+$"
+  condition: oauth_endpoint and no_state
+level: medium
+mitre_attack:
+  tactics: [credential-access]
+  techniques: [T1550]
+references:
+  - cwe: CWE-352
+  - url: https://datatracker.ietf.org/doc/html/rfc6749#section-10.12
+false_positives:
+  - OAuth clients using PKCE that omit state (still bad practice)
+  - Internal service-to-service client credentials flow
+tags: [attack.credential_access, attack.t1550]

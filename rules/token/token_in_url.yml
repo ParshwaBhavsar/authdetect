@@ -1,0 +1,27 @@
+title: Authentication Token Transmitted in URL
+id: AUTHDET-009
+status: stable
+description: |
+  A bearer token, API key, or session ID appears as a URL query parameter.
+  Tokens in URLs leak through web server logs, proxy logs, browser history,
+  and the HTTP Referer header — all easily accessible to an attacker with
+  log access.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: web
+detection:
+  selection:
+    path|re: ".*(token|api_key|apikey|access_token|auth_token|bearer|jwt)=[A-Za-z0-9._\\-]{8,}.*"
+  condition: selection
+level: medium
+mitre_attack:
+  tactics: [credential-access]
+  techniques: [T1552.001]
+references:
+  - cwe: CWE-598
+  - owasp: "A02:2021 – Cryptographic Failures"
+false_positives:
+  - OAuth callback URLs that include a short-lived authorization code
+  - SSO flows during the redirect phase (short-lived codes only)
+tags: [attack.credential_access, attack.t1552.001]

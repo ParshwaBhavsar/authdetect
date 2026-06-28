@@ -1,0 +1,27 @@
+title: JWT Algorithm None — Signature Bypass Attempt
+id: AUTHDET-007
+status: stable
+description: |
+  A JWT bearing alg:none in its header reached the server. This is the classic
+  signature-bypass: the attacker removes the signature so a vulnerable library
+  accepts any payload without verification. No legitimate production system
+  should ever receive a token with alg:none.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: authentication
+detection:
+  selection:
+    token_alg|contains: none
+  condition: selection
+level: critical
+mitre_attack:
+  tactics: [credential-access, defense-evasion]
+  techniques: [T1550.001]
+references:
+  - cwe: CWE-347
+  - owasp: "A02:2021 – Cryptographic Failures"
+  - url: https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/
+false_positives:
+  - Internal tooling using unsigned tokens on a fully-trusted private network
+tags: [attack.credential_access, attack.t1550.001]

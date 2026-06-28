@@ -1,0 +1,27 @@
+title: API Key Brute Force — Repeated 403s on API Endpoints
+id: AUTHDET-010
+status: stable
+description: |
+  Rapid sequence of 403 Forbidden responses on /api/ paths from a single
+  source IP — indicates automated probing for valid API keys.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: web
+detection:
+  selection:
+    status_code: [401, 403]
+    path|startswith: /api/
+  condition: selection | count(src_ip) > 5
+  timeframe: 30s
+level: high
+mitre_attack:
+  tactics: [credential-access]
+  techniques: [T1110.001]
+references:
+  - cwe: CWE-307
+  - url: https://owasp.org/API-Security/editions/2023/en/0xa2-broken-authentication/
+false_positives:
+  - Misconfigured API clients rotating between multiple keys
+  - CI pipelines with stale credentials
+tags: [attack.credential_access, attack.t1110.001]

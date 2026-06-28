@@ -1,0 +1,29 @@
+title: Account Enumeration via Login Endpoint
+id: AUTHDET-004
+status: stable
+description: |
+  Rapid probing of many distinct usernames against the login endpoint. Attackers
+  exploit differential error messages ("user not found" vs "wrong password") to
+  build a valid user list before launching targeted attacks.
+author: authdetect
+date: 2025-01-01
+logsource:
+  category: authentication
+detection:
+  selection:
+    status_code: [401, 404]
+    path|contains: login
+  condition: selection | count(user) > 15
+  timeframe: 120s
+level: medium
+mitre_attack:
+  tactics: [reconnaissance]
+  techniques: [T1589.001]
+references:
+  - cwe: CWE-204
+  - owasp: "A07:2021 – Identification and Authentication Failures"
+  - url: https://attack.mitre.org/techniques/T1589/001/
+false_positives:
+  - Bulk user provisioning with wrong base credentials
+  - Misconfigured LDAP sync
+tags: [attack.reconnaissance, attack.t1589.001]
